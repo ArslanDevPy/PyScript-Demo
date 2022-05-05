@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="name" content="PyScript/Panel Streaming Demo">
+    <title>PyScript Demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script defer src="https://pyscript.net/alpha/pyscript.js"></script>
+  </head>
+
+  <py-env>
+  - numpy
+  - matplotlib
+  </py-env>
+
+  <body>
+      <h1 class="text-center display-5">Py Script Demo</h1>
+    <div class="row">
+        <div class="col-md-6" id="plot1"></div>
+        <div class="col-md-6" id="plot2"></div>
+        <div class="col-md-6" id="plot3"></div>
+        <div class="col-md-6" id="p4"></div>
+        <div class="col-md-6" id="p5"></div>
+        <div class="col-md-6" id="p6"></div>
+    </div>
+
+<py-script output="plot1">
+import numpy as np
+import matplotlib.pyplot as plt
+
+def make_x_and_y(n):
+    x= np.random.randn(n)
+    y= np.random.randn(n)
+    return x, y
+
+x, y = make_x_and_y(n=1000)
+fig, ax = plt.subplots()
+ax.scatter(x,y)
+fig
+
+</py-script>
+<py-script output="plot2">
+
+N = 5
+menMeans = (20, 35, 30, 35, -27)
+womenMeans = (25, 32, 34, 20, -25)
+menStd = (2, 3, 4, 1, 2)
+womenStd = (3, 5, 2, 3, 3)
+ind = np.arange(N)    # the x locations for the groups
+width = 0.35
+fig, ax = plt.subplots()
+
+p1 = ax.bar(ind, menMeans, width, yerr=menStd, label='Men')
+p2 = ax.bar(ind, womenMeans, width,
+            bottom=menMeans, yerr=womenStd, label='Women')
+
+ax.axhline(0, color='grey', linewidth=0.8)
+ax.set_ylabel('Scores')
+ax.set_title('Scores by group and gender')
+ax.set_xticks(ind, labels=['G1', 'G2', 'G3', 'G4', 'G5'])
+ax.legend()
+
+# Label with label_type 'center' instead of the default 'edge'
+ax.bar_label(p1, label_type='center')
+ax.bar_label(p2, label_type='center')
+ax.bar_label(p2)
+
+plt
+</py-script>
+<py-script output="plot3">
+np.random.seed(19680801)
+
+dt = 0.01
+t = np.arange(0, 30, dt)
+nse1 = np.random.randn(len(t))                 # white noise 1
+nse2 = np.random.randn(len(t))                 # white noise 2
+
+# Two signals with a coherent part at 10Hz and a random part
+s1 = np.sin(2 * np.pi * 10 * t) + nse1
+s2 = np.sin(2 * np.pi * 10 * t) + nse2
+
+fig, axs = plt.subplots(2, 1)
+axs[0].plot(t, s1, t, s2)
+axs[0].set_xlim(0, 2)
+axs[0].set_xlabel('time')
+axs[0].set_ylabel('s1 and s2')
+axs[0].grid(True)
+
+cxy, f = axs[1].cohere(s1, s2, 256, 1. / dt)
+axs[1].set_ylabel('coherence')
+
+fig.tight_layout()
+plt
+
+</py-script>
+<div id="p4"></div>
+<py-script output="p4">
+
+np.random.seed(19680801)
+
+
+fig, ax = plt.subplots()
+for color in ['tab:blue', 'tab:orange', 'tab:green']:
+    n = 750
+    x, y = np.random.rand(2, n)
+    scale = 200.0 * np.random.rand(n)
+    ax.scatter(x, y, c=color, s=scale, label=color,
+               alpha=0.3, edgecolors='none')
+
+ax.legend()
+ax.grid(True)
+
+plt
+</py-script>
+<div id="p5"></div>
+<py-script output="p5">
+np.random.seed(19680801)
+
+# Compute pie slices
+N = 20
+theta = np.linspace(0.0, 2 * np.pi, N, endpoint=False)
+radii = 10 * np.random.rand(N)
+width = np.pi / 4 * np.random.rand(N)
+colors = plt.cm.viridis(radii / 10.)
+
+ax = plt.subplot(projection='polar')
+ax.bar(theta, radii, width=width, bottom=0.0, color=colors, alpha=0.5)
+
+plt
+</py-script>
+
+<py-script output="p6">
+np.random.seed(19680801)
+
+plt.style.use('bmh')
+
+def plot_beta_hist(ax, a, b):
+    ax.hist(np.random.beta(a, b, size=10000),
+            histtype="stepfilled", bins=25, alpha=0.8, density=True)
+
+fig, ax = plt.subplots()
+plot_beta_hist(ax, 10, 10)
+plot_beta_hist(ax, 4, 12)
+plot_beta_hist(ax, 50, 12)
+plot_beta_hist(ax, 6, 55)
+ax.set_title("'bmh' style sheet")
+
+plt
+</py-script>
+
+  </body>
+</html>
